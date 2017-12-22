@@ -1,0 +1,5 @@
+Get all data (1 min/ times)
+
+Command-line:  crontab -e
+
+* * * * *  cd mkdir(project) && /usr/local/bin/node api.js

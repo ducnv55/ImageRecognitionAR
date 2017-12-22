@@ -1,0 +1,38 @@
+{
+  "Jo" : {
+    "faceid" : "100000902337766",
+    "screen_name" : "jotaro_jp",
+    "instagramid" : "104840900",
+    "igname": "jotarosato"
+  },
+  "Shoji" : {
+    "faceid" : "100002095567265",
+    "screen_name" : "shoji_usui",
+    "instagramid" : "1914887032",
+    "igname": "shoji_u"
+  },
+  "Viet" : {
+    "faceid" : "100002929016718",
+    "screen_name" : "aaaoooify",
+    "instagramid" : "1774657837",
+    "igname": "viet_buzz"
+  },
+  "Tam" : {
+    "faceid" : "100006893168904",
+    "screen_name" : "wavesandwindLif",
+    "instagramid" : "2522931988",
+    "igname": "jotarosato"
+  },
+  "Duc" : {
+    "faceid" : "100001672994238",
+    "screen_name" : "DucNguyenCBR",
+    "instagramid" : "1121742602537836035",
+    "igname": "ducnv.cbr"
+  },
+  "TAnh" : {
+    "faceid" : "100003154685571",
+    "screen_name" : "htaptit",
+    "instagramid" : "3723129539",
+    "igname": "hoang.tronganh"
+  }
+}

@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09C09EBD1FECC8E100FA4202 /* BaseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C09EB81FECC8E100FA4202 /* BaseData.swift */; };
+		09C09EBE1FECC8E100FA4202 /* Facebook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C09EB91FECC8E100FA4202 /* Facebook.swift */; };
+		09C09EBF1FECC8E100FA4202 /* Instagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C09EBA1FECC8E100FA4202 /* Instagram.swift */; };
+		09C09EC01FECC8E100FA4202 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C09EBB1FECC8E100FA4202 /* Request.swift */; };
+		09C09EC11FECC8E100FA4202 /* Twitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C09EBC1FECC8E100FA4202 /* Twitter.swift */; };
 		8E0CC6301FECB1C0002548A5 /* tmh_faces.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E0CC62F1FECB1C0002548A5 /* tmh_faces.mlmodel */; };
 		8E343A891FE3D98F0077A427 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E343A881FE3D98F0077A427 /* AppDelegate.swift */; };
 		8E343A8B1FE3D98F0077A427 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E343A8A1FE3D98F0077A427 /* art.scnassets */; };
@@ -28,6 +33,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		09C09EB81FECC8E100FA4202 /* BaseData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseData.swift; sourceTree = "<group>"; };
+		09C09EB91FECC8E100FA4202 /* Facebook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Facebook.swift; sourceTree = "<group>"; };
+		09C09EBA1FECC8E100FA4202 /* Instagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Instagram.swift; sourceTree = "<group>"; };
+		09C09EBB1FECC8E100FA4202 /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		09C09EBC1FECC8E100FA4202 /* Twitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Twitter.swift; sourceTree = "<group>"; };
 		8E0CC62F1FECB1C0002548A5 /* tmh_faces.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = tmh_faces.mlmodel; sourceTree = "<group>"; };
 		8E343A851FE3D98F0077A427 /* ImageRecognitionAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageRecognitionAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E343A881FE3D98F0077A427 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -60,6 +70,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09C09EB71FECC8E100FA4202 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				09C09EB81FECC8E100FA4202 /* BaseData.swift */,
+				09C09EB91FECC8E100FA4202 /* Facebook.swift */,
+				09C09EBA1FECC8E100FA4202 /* Instagram.swift */,
+				09C09EBB1FECC8E100FA4202 /* Request.swift */,
+				09C09EBC1FECC8E100FA4202 /* Twitter.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		8E343A7C1FE3D98F0077A427 = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +103,7 @@
 		8E343A871FE3D98F0077A427 /* ImageRecognitionAR */ = {
 			isa = PBXGroup;
 			children = (
+				09C09EB71FECC8E100FA4202 /* Model */,
 				8E0CC62F1FECB1C0002548A5 /* tmh_faces.mlmodel */,
 				8E343A881FE3D98F0077A427 /* AppDelegate.swift */,
 				8E343A8A1FE3D98F0077A427 /* art.scnassets */,
@@ -208,6 +231,11 @@
 			files = (
 				8E343A8D1FE3D98F0077A427 /* ViewController.swift in Sources */,
 				8E0CC6301FECB1C0002548A5 /* tmh_faces.mlmodel in Sources */,
+				09C09EBE1FECC8E100FA4202 /* Facebook.swift in Sources */,
+				09C09EC11FECC8E100FA4202 /* Twitter.swift in Sources */,
+				09C09EBD1FECC8E100FA4202 /* BaseData.swift in Sources */,
+				09C09EC01FECC8E100FA4202 /* Request.swift in Sources */,
+				09C09EBF1FECC8E100FA4202 /* Instagram.swift in Sources */,
 				8E343A891FE3D98F0077A427 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
