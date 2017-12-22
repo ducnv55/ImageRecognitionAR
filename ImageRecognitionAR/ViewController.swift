@@ -18,7 +18,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet var sceneView: ARSCNView!
     let bubbleDepth : Float = 0.06 // the 'depth' of 3D text
     var latestPrediction : String = "…" // a variable containing the latest CoreML prediction
-    var scaleValue = SCNVector3Make(0.3, 0.3, 0.3)
+    var scaleValue = SCNVector3Make(0.5, 0.5, 0.5)
     
     // COREML
     var visionRequests = [VNRequest]()
@@ -173,9 +173,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func createNewBubbleParentNode(_ text : String) -> SCNNode {
         
+        // TEXT BILLBOARD CONSTRAINT
+//        let billboardConstraint = SCNBillboardConstraint()
+//        billboardConstraint.freeAxes =
+        
         // BUBBLE-TEXT
         let bubble = SCNText(string: text, extrusionDepth: CGFloat(bubbleDepth))
-        let font = UIFont.boldSystemFont(ofSize: 0.1)
+        let font = UIFont.systemFont(ofSize: 0.1, weight: UIFont.Weight(rawValue: 1))
         bubble.font = font
         bubble.alignmentMode = kCAAlignmentCenter
         bubble.firstMaterial?.diffuse.contents = UIColor.red
@@ -188,7 +192,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         var (minBound, maxBound) = bubble.boundingBox
         let bubbleNode = SCNNode(geometry: bubble)
         // Centre Node - to Centre-Bottom point
-        bubbleNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 + 0.2 , minBound.y - 0.2, bubbleDepth/2)
+        bubbleNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 + 0.15, minBound.y - 0.15, bubbleDepth/2)
         // Reduce default text size
         bubbleNode.scale = scaleValue
         
@@ -223,12 +227,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         insNode.scale = scaleValue
         
         // SOCIAL MEDIA NODE
-        // Include Facebook, Twitter, Instagram
+        // Cover with Facebook, Twitter, Instagram's profile 
         let smSCNBox = get3dAvatarImage(name: "tam")
         (minBound, maxBound) = smSCNBox.boundingBox
         let socialMediaNode = SCNNode(geometry: smSCNBox)
         // Centre Node - to Centre-Bottom point
-        socialMediaNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 - 0.5, minBound.y, bubbleDepth/2)
+        socialMediaNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 - 0.15, minBound.y - 0.15, bubbleDepth/2)
         socialMediaNode.scale = scaleValue
         
         // BUBBLE PARENT NODE
@@ -238,6 +242,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         bubbleNodeParent.addChildNode(twNode)
         bubbleNodeParent.addChildNode(insNode)
         bubbleNodeParent.addChildNode(socialMediaNode)
+//        bubbleNodeParent.constraints = [billboardConstraint]
         return bubbleNodeParent
     }
     
@@ -255,7 +260,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func get3dAvatarImage(name: String) -> SCNBox {
-        let boxGeometry = SCNBox(width: 0.2, height: 0.2, length: 0.2, chamferRadius: 0.01)
+        let boxGeometry = SCNBox(width: 0.15, height: 0.15, length: 0.15, chamferRadius: 0.01)
         
         let socialMediaMaterial = SCNMaterial()
         socialMediaMaterial.diffuse.contents = #imageLiteral(resourceName: "tam")
