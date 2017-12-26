@@ -25,7 +25,7 @@ class Api {
     }
     
     func getData(data: @escaping (BaseData) -> ()) {
-        Alamofire.request("http://0.0.0.0:3000/api/scname=\(self.scname!)").responseJSON { response in
+        Alamofire.request("http://192.168.0.16:3000/api/scname=\(self.scname!)").responseJSON { response in
             if let res = response.response {
                 if response.response?.statusCode == 200 {
                     if let _ = response.data {
