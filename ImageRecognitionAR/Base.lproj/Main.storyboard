@@ -12,7 +12,7 @@
         <!--View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="ViewController" customModule="CoreML_in_ARKit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BV1-FR-VrT" customClass="ViewController" customModule="ImageRecognitionAR" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tix-nH-sfG">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -45,23 +45,42 @@
                                     <action selector="resetSceneView:" destination="BV1-FR-VrT" eventType="touchUpInside" id="hZb-dZ-274"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xb4-ax-X9K">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="eAV-t4-2xi">
+                                        <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.89544092465753422" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="eAV-t4-2xi" firstAttribute="centerY" secondItem="xb4-ax-X9K" secondAttribute="centerY" id="2oC-e8-Fih"/>
+                                    <constraint firstItem="eAV-t4-2xi" firstAttribute="centerX" secondItem="xb4-ax-X9K" secondAttribute="centerX" id="BGF-Uz-jMG"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="xb4-ax-X9K" firstAttribute="leading" secondItem="W2V-Gj-Pwx" secondAttribute="leading" id="BJY-eY-tmf"/>
                             <constraint firstItem="dsX-w8-U6Z" firstAttribute="trailing" secondItem="W2V-Gj-Pwx" secondAttribute="trailing" id="Pl3-2U-EL7"/>
                             <constraint firstItem="dsX-w8-U6Z" firstAttribute="leading" secondItem="hWs-m5-HIX" secondAttribute="trailing" id="TQA-js-b0v"/>
+                            <constraint firstItem="W2V-Gj-Pwx" firstAttribute="bottom" secondItem="xb4-ax-X9K" secondAttribute="bottom" id="ao7-hi-bhk"/>
                             <constraint firstItem="hWs-m5-HIX" firstAttribute="leading" secondItem="W2V-Gj-Pwx" secondAttribute="leading" id="bYb-Zu-hM1"/>
                             <constraint firstItem="XMs-gA-sya" firstAttribute="trailing" secondItem="W2V-Gj-Pwx" secondAttribute="trailing" id="bg6-Jm-8Wb"/>
                             <constraint firstItem="XMs-gA-sya" firstAttribute="leading" secondItem="W2V-Gj-Pwx" secondAttribute="leading" id="fgq-Rs-G2A"/>
                             <constraint firstItem="hWs-m5-HIX" firstAttribute="top" secondItem="tix-nH-sfG" secondAttribute="top" id="hFg-7r-eMc"/>
                             <constraint firstItem="dsX-w8-U6Z" firstAttribute="top" secondItem="tix-nH-sfG" secondAttribute="top" id="ieB-Pd-WZ6"/>
+                            <constraint firstItem="W2V-Gj-Pwx" firstAttribute="trailing" secondItem="xb4-ax-X9K" secondAttribute="trailing" id="sUI-Zz-9R1"/>
                             <constraint firstItem="XMs-gA-sya" firstAttribute="top" secondItem="tix-nH-sfG" secondAttribute="top" id="vHp-rp-JQw"/>
+                            <constraint firstItem="xb4-ax-X9K" firstAttribute="top" secondItem="tix-nH-sfG" secondAttribute="top" id="yen-6T-esl"/>
                             <constraint firstItem="XMs-gA-sya" firstAttribute="bottom" secondItem="W2V-Gj-Pwx" secondAttribute="bottom" id="zam-8D-9DF"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="W2V-Gj-Pwx"/>
                     </view>
                     <connections>
                         <outlet property="debugTextView" destination="hWs-m5-HIX" id="aW0-YQ-CNv"/>
+                        <outlet property="loadingIndicatorView" destination="eAV-t4-2xi" id="6p2-oh-Ba5"/>
+                        <outlet property="loadingView" destination="xb4-ax-X9K" id="qzf-Yu-W68"/>
                         <outlet property="sceneView" destination="XMs-gA-sya" id="uz8-4k-aSX"/>
                     </connections>
                 </viewController>

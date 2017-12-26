@@ -9,21 +9,29 @@
 import UIKit
 import SceneKit
 import ARKit
-
 import Vision
+import SDWebImage
 
 class ViewController: UIViewController, ARSCNViewDelegate {
+    
+    // IBOutlet
+    @IBOutlet weak var debugTextView: UITextView!
+    @IBOutlet weak var loadingView: UIView!
+    @IBOutlet weak var loadingIndicatorView: UIActivityIndicatorView!
     
     // SCENE
     @IBOutlet var sceneView: ARSCNView!
     let bubbleDepth : Float = 0.06 // the 'depth' of 3D text
     var latestPrediction : String = "…" // a variable containing the latest CoreML prediction
     var scaleValue = SCNVector3Make(0.5, 0.5, 0.5)
+    var textScaleValue = SCNVector3Make(0.2, 0.2, 0.2)
     
     // COREML
     var visionRequests = [VNRequest]()
     let dispatchQueueML = DispatchQueue(label: "com.hw.dispatchqueueml") // A Serial Queue
-    @IBOutlet weak var debugTextView: UITextView!
+    
+    let username: [String] = ["anh", "cat", "dog", "jo", "mai", "tam"]
+    var userData: [String: User] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,33 +51,41 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Enable Default Lighting - makes the 3D text a bit poppier.
         sceneView.autoenablesDefaultLighting = true
         
-        //////////////////////////////////////////////////
-        // Tap Gesture Recognizer
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(gestureRecognize:)))
-        tapGesture.numberOfTapsRequired = 2
-        view.addGestureRecognizer(tapGesture)
-        
-        //////////////////////////////////////////////////
-        
-        // Set up Vision Model
-        guard let selectedModel = try? VNCoreMLModel(for: tmh_faces().model) else { // (Optional) This can be replaced with other models on https://developer.apple.com/machine-learning/
-            fatalError("Could not load model. Ensure model has been drag and dropped (copied) to XCode Project from https://developer.apple.com/machine-learning/ . Also ensure the model is part of a target (see: https://stackoverflow.com/questions/45884085/model-is-not-part-of-any-target-add-the-model-to-a-target-to-enable-generation ")
-        }
+        loadingView.isHidden = false
+        loadingIndicatorView.startAnimating()
         
         // Node tap gesture
         let tapRecognizer = UITapGestureRecognizer()
         tapRecognizer.numberOfTapsRequired = 1
         tapRecognizer.numberOfTouchesRequired = 1
-        tapRecognizer.addTarget(self, action: #selector(sceneTapped))
-        sceneView.gestureRecognizers = [tapRecognizer]
+        tapRecognizer.addTarget(self, action: #selector(self.sceneTapped))
+        self.sceneView.gestureRecognizers = [tapRecognizer]
         
-        // Set up Vision-CoreML Request
-        let classificationRequest = VNCoreMLRequest(model: selectedModel, completionHandler: classificationCompleteHandler)
-        classificationRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop // Crop from centre of images and scale to appropriate size.
-        visionRequests = [classificationRequest]
-        
-        // Begin Loop to Update CoreML
-        loopCoreMLUpdate()
+        // GET USER'S DATA
+        getData {
+            // Tap Gesture Recognizer
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(gestureRecognize:)))
+            tapGesture.numberOfTapsRequired = 2
+            self.view.addGestureRecognizer(tapGesture)
+            
+            //////////////////////////////////////////////////
+            
+            // Set up Vision Model
+            guard let selectedModel = try? VNCoreMLModel(for: aduc145().model) else { // (Optional) This can be replaced with other models on https://developer.apple.com/machine-learning/
+                fatalError("Could not load model. Ensure model has been drag and dropped (copied) to XCode Project from https://developer.apple.com/machine-learning/ . Also ensure the model is part of a target (see: https://stackoverflow.com/questions/45884085/model-is-not-part-of-any-target-add-the-model-to-a-target-to-enable-generation ")
+            }
+            
+            // Set up Vision-CoreML Request
+            let classificationRequest = VNCoreMLRequest(model: selectedModel, completionHandler: self.classificationCompleteHandler)
+            classificationRequest.imageCropAndScaleOption = VNImageCropAndScaleOption.centerCrop // Crop from centre of images and scale to appropriate size.
+            self.visionRequests = [classificationRequest]
+            
+            // Begin Loop to Update CoreML
+            self.loopCoreMLUpdate()
+            
+            self.loadingIndicatorView.stopAnimating()
+            self.loadingView.isHidden = true
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -96,6 +112,62 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Release any cached data, images, etc that aren't in use.
     }
     
+    func getData(completion: @escaping () -> Void) {
+        var userCompletedLoadingDataCount = 0
+        for user in username {
+            var imageCount = 0
+            let initUser = Api(scname: user)
+            initUser.getData(data: { (data) in
+                // get facebook avatar
+                let fbAvaImageView = UIImageView()
+                fbAvaImageView.sd_setImage(with: data.facebook.picture, placeholderImage: #imageLiteral(resourceName: "facebook"), options: SDWebImageOptions.continueInBackground, completed: { (image, err, cache, url) in
+                    imageCount += 1
+                    if imageCount == 3 {
+                        userCompletedLoadingDataCount += 1
+                        if userCompletedLoadingDataCount == self.username.count {
+                            completion()
+                        }
+                    }
+                })
+                
+                // get twitter avatar
+                let twAvaImageView = UIImageView()
+                let twAvatarUrlString = data.twitter.profile_image_url_https.absoluteString
+                let hightResTwAvaUrlString = twAvatarUrlString.replacingOccurrences(of: "_normal", with: "")
+                twAvaImageView.sd_setImage(with: URL(string: hightResTwAvaUrlString), placeholderImage: #imageLiteral(resourceName: "twitter"), options: SDWebImageOptions.continueInBackground, completed: { (image, err, cache, url) in
+                    imageCount += 1
+                    if imageCount == 3 {
+                        userCompletedLoadingDataCount += 1
+                        if userCompletedLoadingDataCount == self.username.count {
+                            completion()
+                        }
+                    }
+                })
+                
+                // get instagram avatar
+                let insAvaImageView = UIImageView()
+                insAvaImageView.sd_setImage(with: data.instagram.profile_picture, placeholderImage: #imageLiteral(resourceName: "instagram"), options: SDWebImageOptions.continueInBackground, completed: { (image, err, cache, url) in
+                    imageCount += 1
+                    if imageCount == 3 {
+                        userCompletedLoadingDataCount += 1
+                        if userCompletedLoadingDataCount == self.username.count {
+                            completion()
+                        }
+                    }
+                })
+                
+                let userInfo = User(fullname: data.facebook.name,
+                                    fb_id: data.facebook.id,
+                                    tw_id: data.twitter.id,
+                                    ins_id: String(data.instagram.id),
+                                    fb_ava: fbAvaImageView,
+                                    tw_ava: twAvaImageView,
+                                    ins_ava: insAvaImageView)
+                self.userData[user] = userInfo
+            })
+        }
+    }
+    
     // MARK: NODE TAP GESTURE
     @objc func sceneTapped(recognizer: UITapGestureRecognizer) {
         let location = recognizer.location(in: sceneView)
@@ -104,9 +176,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         if hitResults.count > 0 {
             let result = hitResults[0]
             let node = result.node
-            if let name = node.name, let label = node.accessibilityLabel {
+            if let accountID = node.name, let label = node.accessibilityLabel {
                 // go to user's social media app
-                jumpToApp(appName: label, accountID: name)
+                jumpToApp(appName: label, accountID: accountID)
             }
         }
     }
@@ -157,7 +229,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let startPosition = SCNVector3Make(worldCoord.x, worldCoord.y + 0.3, worldCoord.z)
             
             // Create 3D Text
-            let node : SCNNode = createNewBubbleParentNode(latestPrediction)
+            let node : SCNNode = createNewBubbleParentNode(latestPrediction.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
             sceneView.scene.rootNode.addChildNode(node)
             node.position = startPosition
             
@@ -171,15 +243,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    func createNewBubbleParentNode(_ text : String) -> SCNNode {
+    func createNewBubbleParentNode(_ name : String) -> SCNNode {
         
         // TEXT BILLBOARD CONSTRAINT
 //        let billboardConstraint = SCNBillboardConstraint()
 //        billboardConstraint.freeAxes =
         
         // BUBBLE-TEXT
-        let bubble = SCNText(string: text, extrusionDepth: CGFloat(bubbleDepth))
-        let font = UIFont.systemFont(ofSize: 0.1, weight: UIFont.Weight(rawValue: 1))
+        let bubble = SCNText(string: self.userData[name]?.fullname, extrusionDepth: CGFloat(bubbleDepth))
+        let font = UIFont(name: "HelveticaNeue-Bold", size: 0.1)
         bubble.font = font
         bubble.alignmentMode = kCAAlignmentCenter
         bubble.firstMaterial?.diffuse.contents = UIColor.red
@@ -192,15 +264,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         var (minBound, maxBound) = bubble.boundingBox
         let bubbleNode = SCNNode(geometry: bubble)
         // Centre Node - to Centre-Bottom point
-        bubbleNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 + 0.15, minBound.y - 0.15, bubbleDepth/2)
+        bubbleNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 + 0.05, minBound.y - 0.35, bubbleDepth/2)
         // Reduce default text size
-        bubbleNode.scale = scaleValue
+        bubbleNode.scale = textScaleValue
         
         // FACEBOOK NODE
         let facebookSCNBox = getSocialMediaNode(type: "facebook")
         (minBound, maxBound) = facebookSCNBox.boundingBox
         let fbNode = SCNNode(geometry: facebookSCNBox)
-        fbNode.name = "100000902337766"
+        fbNode.name = self.userData[name]?.fb_id
         fbNode.accessibilityLabel = "facebook"
         // Centre Node - to Centre-Bottom point
         fbNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 + 0.15, minBound.y, bubbleDepth/2)
@@ -210,7 +282,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let twitterSCNBox = getSocialMediaNode(type: "twitter")
         (minBound, maxBound) = twitterSCNBox.boundingBox
         let twNode = SCNNode(geometry: twitterSCNBox)
-        twNode.name = "740022229765738496"
+        twNode.name = self.userData[name]?.tw_id
         twNode.accessibilityLabel = "twitter"
         // Centre Node - to Centre-Bottom point
         twNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2, minBound.y, bubbleDepth/2)
@@ -220,7 +292,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let instagramSCNBox = getSocialMediaNode(type: "instagram")
         (minBound, maxBound) = instagramSCNBox.boundingBox
         let insNode = SCNNode(geometry: instagramSCNBox)
-        insNode.name = "1943948110"
+        insNode.name = self.userData[name]?.ins_id
         insNode.accessibilityLabel = "instagram"
         // Centre Node - to Centre-Bottom point
         insNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 - 0.15, minBound.y, bubbleDepth/2)
@@ -228,11 +300,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // SOCIAL MEDIA NODE
         // Cover with Facebook, Twitter, Instagram's profile 
-        let smSCNBox = get3dAvatarImage(name: "tam")
+        let smSCNBox = get3dAvatarImage(name: name)
         (minBound, maxBound) = smSCNBox.boundingBox
         let socialMediaNode = SCNNode(geometry: smSCNBox)
         // Centre Node - to Centre-Bottom point
-        socialMediaNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 - 0.15, minBound.y - 0.15, bubbleDepth/2)
+        socialMediaNode.pivot = SCNMatrix4MakeTranslation( (maxBound.x - minBound.x)/2 - 0.05, minBound.y - 0.2, bubbleDepth/2)
         socialMediaNode.scale = scaleValue
         
         // BUBBLE PARENT NODE
@@ -262,12 +334,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func get3dAvatarImage(name: String) -> SCNBox {
         let boxGeometry = SCNBox(width: 0.15, height: 0.15, length: 0.15, chamferRadius: 0.01)
         
-        let socialMediaMaterial = SCNMaterial()
-        socialMediaMaterial.diffuse.contents = #imageLiteral(resourceName: "tam")
-        socialMediaMaterial.locksAmbientWithDiffuse = true;
+        let fbSocialMediaMaterial = SCNMaterial()
+        fbSocialMediaMaterial.diffuse.contents = self.userData[name]?.fb_ava.image
         
-        boxGeometry.materials =  [socialMediaMaterial, socialMediaMaterial, socialMediaMaterial,
-                                  socialMediaMaterial, socialMediaMaterial, socialMediaMaterial]
+        let twSocialMediaMaterial = SCNMaterial()
+        twSocialMediaMaterial.diffuse.contents = self.userData[name]?.tw_ava.image
+        
+        let insSocialMediaMaterial = SCNMaterial()
+        insSocialMediaMaterial.diffuse.contents = self.userData[name]?.ins_ava.image
+        
+        fbSocialMediaMaterial.locksAmbientWithDiffuse = true;
+        twSocialMediaMaterial.locksAmbientWithDiffuse = true;
+        insSocialMediaMaterial.locksAmbientWithDiffuse = true;
+        
+        boxGeometry.materials =  [fbSocialMediaMaterial, twSocialMediaMaterial, fbSocialMediaMaterial,
+                                  insSocialMediaMaterial, twSocialMediaMaterial, insSocialMediaMaterial]
         return boxGeometry
     }
     
@@ -299,6 +380,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Get Classifications
         let classifications = observations[0...1] // top 2 results
             .flatMap({ $0 as? VNClassificationObservation })
+//            .filter({$0.confidence > 0.5})
             .map({ "\($0.identifier) \(String(format:"- %.2f", $0.confidence))" })
             .joined(separator: "\n")
         
