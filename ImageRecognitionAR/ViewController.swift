@@ -30,7 +30,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var visionRequests = [VNRequest]()
     let dispatchQueueML = DispatchQueue(label: "com.hw.dispatchqueueml") // A Serial Queue
     
-    let username: [String] = ["anh", "cat", "dog", "jo", "mai", "tam"]
+    let username: [String] = ["duc", "viet", "tam", "jo"]
     var userData: [String: User] = [:]
     
     override func viewDidLoad() {
@@ -71,7 +71,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             //////////////////////////////////////////////////
             
             // Set up Vision Model
-            guard let selectedModel = try? VNCoreMLModel(for: aduc145().model) else { // (Optional) This can be replaced with other models on https://developer.apple.com/machine-learning/
+            guard let selectedModel = try? VNCoreMLModel(for: face().model) else { // (Optional) This can be replaced with other models on https://developer.apple.com/machine-learning/
                 fatalError("Could not load model. Ensure model has been drag and dropped (copied) to XCode Project from https://developer.apple.com/machine-learning/ . Also ensure the model is part of a target (see: https://stackoverflow.com/questions/45884085/model-is-not-part-of-any-target-add-the-model-to-a-target-to-enable-generation ")
             }
             
@@ -247,7 +247,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // TEXT BILLBOARD CONSTRAINT
 //        let billboardConstraint = SCNBillboardConstraint()
-//        billboardConstraint.freeAxes =
+//        billboardConstraint.freeAxes = 
         
         // BUBBLE-TEXT
         let bubble = SCNText(string: self.userData[name]?.fullname, extrusionDepth: CGFloat(bubbleDepth))
